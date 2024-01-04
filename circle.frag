@@ -1,32 +1,25 @@
+// Author @patriciogv - 2015
+// http://patriciogonzalezvivo.com
+
 #ifdef GL_ES
 precision mediump float;
 #endif
-
-#define PI 3.14159265359
 
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
+float circle(in vec2 _st, in float _radius){
+    vec2 dist = _st-vec2(0.5);
+	return 1.-smoothstep(_radius-(_radius*0.01),
+                         _radius+(_radius*0.01),
+                         dot(dist,dist)*4.0);
+}
 
-void main() {
-    vec2 st = gl_FragCoord.xy/u_resolution;
+void main(){
+	vec2 st = gl_FragCoord.xy/u_resolution.xy;
 
-    float r = 0.3;    
-    float y = r*(1.-sin(3.*PI*u_time));
-    float x = r*cos(3.*PI*u_time);
-    vec2 center = u_mouse/u_resolution;
-    
-    vec3 color = vec3(0.);
-    
-    float distanceToMouse = distance(st, center);
-    if (distanceToMouse<=0.001){
-        color = vec3(1.);
-    }
+	vec3 color = vec3(circle(st,abs(sin(3.14*u_time))));
 
-    float d = distance(st, center-vec2(x,y));
-    if (d<=0.05){
-        color = vec3(1.,0.,0.);
-    }
-    gl_FragColor = vec4(color,1.0);
+	gl_FragColor = vec4( color, 1.0 );
 }
